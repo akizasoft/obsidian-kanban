@@ -9,6 +9,8 @@ import { t } from 'src/lang/helpers';
 import { BoardModifiers } from '../../helpers/boardModifiers';
 import { applyTemplate, escapeRegExpStr, generateInstanceId } from '../helpers';
 import { EditState, Item } from '../types';
+import { constructTagPicker } from './TagPicker';
+import { appendTagsToCardTitle } from './TagUtils';
 import {
   constructDatePicker,
   constructMenuDatePickerOnChange,
@@ -203,6 +205,27 @@ export function useItemMenu({
                 }),
                 item.data.metadata.date?.toDate()
               );
+            });
+        })
+        .addItem((i) => {
+          i.setIcon('lucide-tag')
+            .setTitle(t('Add tag'))
+            .onClick(() => {
+              const itemRect = (i as typeof i & { dom?: HTMLElement }).dom?.getBoundingClientRect();
+
+              constructTagPicker(e.view ?? window, coordinates, (tags) => {
+                const title = appendTagsToCardTitle(
+                  item.data.titleRaw,
+                  item.data.metadata.tags,
+                  tags
+                );
+
+                if (title === null) return false;
+
+                boardModifiers.updateItem(path, stateManager.updateItemContent(item, title));
+
+                return true;
+              });
             });
         });
 

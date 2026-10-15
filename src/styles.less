@@ -1438,15 +1438,19 @@ button.kanban-plugin__cancel-action-button {
   color: var(--text-faint);
 }
 
+.kanban-plugin__time-picker,
+.kanban-plugin__tag-picker {
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  color: var(--text-normal);
+}
+
 .kanban-plugin__time-picker {
   position: absolute;
   max-height: 250px;
   overflow: auto;
   border-radius: 4px;
-  border: 1px solid var(--background-modifier-border);
   box-shadow: 0 2px 8px var(--background-modifier-box-shadow);
-  background: var(--background-primary);
-  color: var(--text-normal);
   font-size: 14px;
   z-index: var(--layer-menu);
 }
@@ -1785,4 +1789,34 @@ body:not(.native-scrollbars) .kanban-plugin__scroll-container::-webkit-scrollbar
   .kanban-plugin__date:hover {
     background-color: var(--date-background-color, rgba(var(--mono-rgb-100), 0.05));
   }
+}
+
+.kanban-plugin__tag-picker {
+  position: fixed;
+  z-index: var(--layer-popover);
+  box-sizing: border-box;
+  width: min(260px, calc(100vw - 16px));
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: var(--radius-m);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.kanban-plugin__tag-picker-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--font-ui-small);
+}
+
+.kanban-plugin__tag-picker-label input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.kanban-plugin__tag-picker-actions {
+  display: flex;
+  justify-content: flex-end;
 }
