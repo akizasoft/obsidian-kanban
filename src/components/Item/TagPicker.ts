@@ -5,7 +5,7 @@ import { Notice } from 'obsidian';
 import { t } from 'src/lang/helpers';
 
 import { c } from '../helpers';
-import { normalizeCardTag } from './TagUtils';
+import { parseCardTagsInput } from './TagUtils';
 
 interface TagPickerPosition {
   x: number;
@@ -16,7 +16,7 @@ interface TagPickerPosition {
 export function constructTagPicker(
   win: Window,
   position: TagPickerPosition,
-  onAddTag: (tag: string) => boolean
+  onAddTags: (tag: string) => boolean
 ): void {
   const div = win.document.body.createDiv({
     cls: `${c('tag-picker')} ${c('ignore-click-outside')}`,
@@ -35,8 +35,6 @@ export function constructTagPicker(
   });
 
   // Add the tags you want here
-  // TODO: Add the ability to add multiple tags at once
-  // TODO: Add the ability to add tags with spaces (this is not currently supported at all, so this may be a large change)
   const input = label.createEl('input', {
     type: 'text',
     attr: {
@@ -69,17 +67,17 @@ export function constructTagPicker(
   };
 
   const submit = () => {
-    const tag = normalizeCardTag(input.value);
+    const tags = parseCardTagsInput(input.value);
 
-    // If a tag has spaces or is not appropiate per Obsidian's standards, we need to notify the user
-    if (tag === null) {
-      new Notice('Please enter a valid tag.');
+    // Convert all spaces to hyphens when the user submits their tags
+    if (tags === null) {
+      new Notice('Enter tags separated by commas (spaces become hyphens)');
       input.focus();
       return;
     }
 
     // Automatically close the picker when a tag is added
-    if (onAddTag(tag)) {
+    if (onAddTags(tags)) {
       close();
     } else {
       // If a duplicate is added, we notify the user

@@ -10,7 +10,7 @@ import { BoardModifiers } from '../../helpers/boardModifiers';
 import { applyTemplate, escapeRegExpStr, generateInstanceId } from '../helpers';
 import { EditState, Item } from '../types';
 import { constructTagPicker } from './TagPicker';
-import { appendTagToCardTitle } from './TagUtils';
+import { appendTagsToCardTitle } from './TagUtils';
 import {
   constructDatePicker,
   constructMenuDatePickerOnChange,
@@ -213,11 +213,11 @@ export function useItemMenu({
             .onClick(() => {
               const itemRect = (i as typeof i & { dom?: HTMLElement }).dom?.getBoundingClientRect();
 
-              constructTagPicker(e.view ?? window, coordinates, (tag) => {
-                const title = appendTagToCardTitle(
+              constructTagPicker(e.view ?? window, coordinates, (tags) => {
+                const title = appendTagsToCardTitle(
                   item.data.titleRaw,
                   item.data.metadata.tags,
-                  tag
+                  tags
                 );
 
                 if (title === null) return false;

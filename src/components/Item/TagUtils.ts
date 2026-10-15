@@ -2,7 +2,7 @@
   Convert the tag to an already supported Markdown tag (#Tag)
 */
 export function normalizeCardTag(input: string): string | null {
-  const tagName = input.trim().replace(/^#/, '');
+  const tagName = input.trim().replace(/^#/, '').trim().replace(/\s+/g, '-');
 
   // Obsidian tags cannot contain spaces or be entirely numeric
   if (
@@ -34,4 +34,39 @@ export function appendTagToCardTitle(
 
   const title = titleRaw.replace(/\s+$/, '');
   return title ? `${title} ${tag}` : tag;
+}
+
+// Parse comma-sepearate tags, allowing spaces
+export function parseCardTagsInput(input: string): string[] | null {
+  const tags: string[] = [];
+
+  for (const part of input.split(',')) {
+    const tag = normalizeCardTag(part);
+    if (tag === null) return null;
+    tags.push(tag);
+  }
+
+  return tags;
+}
+
+// Allows the user to add multiple tags at once
+// This should still block user's from adding duplicate tags
+export function appendTagsToCardTitle(
+  titleRaw: string,
+  existingTags: readonly string[] | undefined,
+  tags: readonly string[]
+): string | null {
+  let title = titleRaw;
+  const seen = [...(existingTags ?? [])];
+  let changed = false;
+
+  for (const tag of tags) {
+    const updated = appendTagToCardTitle(title, seen, tag);
+    if (updated === null) continue;
+    title = updated;
+    seen.push(tag);
+    changed = true;
+  }
+
+  return changed ? title : null;
 }
